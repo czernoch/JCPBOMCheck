@@ -13,6 +13,7 @@ using Autodesk.Connectivity.WebServices;
 using Autodesk.Connectivity.WebServicesTools;
 using VDF = Autodesk.DataManagement.Client.Framework;
 using AWS = Autodesk.Connectivity.WebServices;
+using Inventor;
 
 /* heslo klice 2JCPKey.pfx: +3aG[a>hGbf8,T)F */
 
@@ -259,7 +260,7 @@ namespace JCPBOMCheck
             ISelection selection = e.Context.CurrentSelectionSet.First();
 
             // Look of the File object.  How we do this depends on what is selected.
-            File selectedFile = null;
+            Autodesk.Connectivity.WebServices.File selectedFile = null;
 
             if (selection.TypeId == SelectionTypeId.File)
             {
@@ -283,12 +284,12 @@ namespace JCPBOMCheck
             load.Start();
             try
             {
-
+                long xref;
                 string vystup = string.Empty; // jenom promenna do messageboxu na testovani
 
                 // vytahnuti atributu ipt/iam
                 /*
-                PropDef[] pdefs = connection.WebServiceManager.PropertyService.GetPropertyDefinitionsByEntityClassId("FILE");
+                PropDef[] pdefs = connection.WebServiceManager.PropertyService.GetPropertyDefinitionsByEntityClassId("ITEM");
                 foreach (PropDef xx in pdefs)
                 {
                     vystup += xx.DispName + " :: " + xx.Id + "\n";
@@ -299,88 +300,110 @@ namespace JCPBOMCheck
                 return;
                 */
 
+
                 // kusovnik na strane vaultu
-                BOM bom = connection.WebServiceManager.DocumentService.GetBOMByFileId(selectedFile.Id);
+                Autodesk.Connectivity.WebServices.BOM bom = connection.WebServiceManager.DocumentService.GetBOMByFileId(selectedFile.Id);
+                var storage = new Dictionary<long, int>();
+                var bomstruct = new Dictionary<long, BOMStructureOverrideEnum>();
+                RecursivelyFillBomQuantities(storage, bomstruct, bom, 0, 1);
+
 
                 load.progressBar1.Maximum = bom.CompArray.Length;
                 load.progressBar1.Step = 1;
 
-                File extid;
-                File[] masterid;
+                Autodesk.Connectivity.WebServices.File extid;
                 PropInst[] propdata;
 
-                Dictionary<int, Dictionary<string,string>> bomdata = new Dictionary<int, Dictionary<string, string>>();
-                Dictionary<string, string> xx = new Dictionary<string, string>();
+                Dictionary<long, Dictionary<string, string>> bomdatagroup = new Dictionary<long, Dictionary<string, string>>();
                 Dictionary<long, bool> duplicita = new Dictionary<long, bool>();
+                Autodesk.Connectivity.WebServices.File[] masterid;
 
-                int x = 0;
+                // prochazeni BOMu
                 foreach (BOMComp bomitem in bom.CompArray)
                 {
-                    xx.Clear();
-                    load.progressBar1.PerformStep();
-
-                    if (bomitem.Id > 1 && duplicita.ContainsKey(bomitem.XRefId)) continue;
-                    duplicita.Add(bomitem.XRefId, true);
-
-//                    if (bomitem.XRefId > 0) extid = connection.WebServiceManager.DocumentService.GetFileById(bomitem.XRefId);
-                    if (bomitem.Id > 1) extid = connection.WebServiceManager.DocumentService.GetFileById(bomitem.XRefId);
-                    else extid = connection.WebServiceManager.DocumentService.GetFileById(selectedFile.Id);
-
-                    //if (bomitem.XRefId > 0) masterid = connection.WebServiceManager.DocumentService.FindFilesByIds(new long[] { bomitem.XRefId });
-                    //else masterid = connection.WebServiceManager.DocumentService.FindFilesByIds(new long[] { selectedFile.Id });
-
-                    //extid = connection.WebServiceManager.DocumentService.GetLatestFileByMasterId(masterid[0].MasterId);
-
-                    // preskocim duplicity
-                    //if (bomitem.Id == 1 && duplicita.ContainsKey(extid.Id)) continue;
-                    //if (bomitem.Id > 1 && duplicita.ContainsKey(extid.Id)) continue;
-
-                    
-                  //       if (duplicita.ContainsKey(extid.Id)) continue;
-//                    duplicita.Add(extid.Id, true);
-
-                    propdata = connection.WebServiceManager.PropertyService.GetProperties("FILE", new long[] { extid.Id }, atributes.Keys.ToArray());
-
-                    foreach (PropInst xy in propdata)
+                    try
                     {
-                        xx.Add(atributes[xy.PropDefId], (xy.Val ?? "") + "");
-                    }
 
-                    xx.Add("BaseQty", bomitem.BaseQty.ToString());
-                    xx.Add("CompTyp", bomitem.CompTyp.ToString());
-                    xx.Add("BOMStruct", bomitem.BOMStruct.ToString());
-                    xx.Add("UniqueId", bomitem.UniqueId.ToString());
-                    xx.Add("XRefTyp", bomitem.XRefTyp.ToString());
-                    xx.Add("ID", extid.Id.ToString());
-                    xx.Add("MasterID", extid.MasterId.ToString());
-                    xx.Add("BaseUOM", bomitem.BaseUOM);
+                        Dictionary<string, string> oneitem = new Dictionary<string, string>();
+                        load.progressBar1.PerformStep();
 
-                    
-                    if (bomitem.Id == 5)
-                    {
-                        string vys = "";
-                        foreach (var tat in xx)
+                        // vyuzivam fileIds z bomu, nize to menim na aktualni fileid z masterid
+                        xref = (bomitem.Id > 0) ? bomitem.XRefId : selectedFile.Id;
+
+                        // vynecham referencni veci
+                        if (bomstruct.ContainsKey(xref) && bomstruct[xref] == BOMStructureOverrideEnum.Reference) continue;
+                        if (bomstruct.ContainsKey(xref) && bomstruct[xref] == BOMStructureOverrideEnum.Phantom) continue; // phantom nefunguje
+
+                        // preskocim duplicity
+                        if (bomitem.Id > 0 && duplicita.ContainsKey(bomitem.XRefId)) continue;
+                        duplicita.Add(bomitem.XRefId, true);
+
+
+                        //    if (bomitem.Id > 0) extid = connection.WebServiceManager.DocumentService.GetFileById(bomitem.XRefId);
+                        //    else extid = connection.WebServiceManager.DocumentService.GetFileById(selectedFile.Id);
+
+
+
+                        if (bomitem.Id > 0) masterid = connection.WebServiceManager.DocumentService.FindFilesByIds(new long[] { bomitem.XRefId });
+                        else masterid = connection.WebServiceManager.DocumentService.FindFilesByIds(new long[] { selectedFile.Id });
+                        extid = connection.WebServiceManager.DocumentService.GetLatestFileByMasterId(masterid[0].MasterId);
+
+                        // u sestav zjistim natvrdo jestli nejsou "skryté/dělící"
+                        //if (bomitem.CompTyp == ComponentTypeEnum.Assembly) {} // nefunguje, má to jen nejvyšší sestava
+
+
+                        // atributy, uživatelské proměnné
+                        propdata = connection.WebServiceManager.PropertyService.GetProperties("FILE", new long[] { extid.Id }, atributes.Keys.ToArray());
+                        foreach (PropInst xy in propdata)
                         {
-                            vys += tat.Key + ": " + tat.Value + "\n";
+                            oneitem.Add(atributes[xy.PropDefId], (xy.Val ?? "") + "");
                         }
-                        MessageBox.Show(vys);
-                        break;
-                    }
-                    
 
-                    bomdata.Add(x, xx);
-                    x++;
+                        
+                        // dodatečné parametry s kterými občas pracuju +-
+                        oneitem.Add("BOMId", bomitem.Id.ToString());
+                        oneitem.Add("BaseQty", (storage.ContainsKey(xref) ? storage[xref].ToString() : "0"));
+//                        oneitem.Add("CompTyp", bomitem.CompTyp.ToString());
+                        //oneitem.Add("BOMStruct", bomitem.BOMStruct.ToString());
+                        oneitem.Add("BOMStructOverde", (bomstruct.ContainsKey(xref) ? bomstruct[xref].ToString() : "Default"));
+                        oneitem.Add("BOMStruct", bomitem.BOMStruct.ToString());
+                        oneitem.Add("UniqueId", bomitem.UniqueId.ToString());
+                        oneitem.Add("XRefTyp", bomitem.XRefTyp.ToString());
+                        oneitem.Add("ID", extid.Id.ToString());
+                        oneitem.Add("MasterID", extid.MasterId.ToString());
+                        oneitem.Add("BaseUOM", bomitem.BaseUOM);
+
+                //        oneitem.Add("test", connection.WebServiceManager.DocumentService.ValidateBOMByFileId(extid.Id).ToString());
+
+
+                        // jenom kontrola dat, když to začne blbnout
+                        if (false)
+                        {
+                            string vys = "";
+                            foreach (var tat in oneitem) vys += tat.Key + ": " + tat.Value + "\n";
+                            MessageBox.Show(vys);
+                        }
+
+                        bomdatagroup[xref] = oneitem;
+                        //bomdatagroup.Add(x, oneitem);
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Chyba. BomID: " + bomitem.Id);
+                    }
+
                 }
 
                 load.Stop();
 
-                MessageBox.Show("celkem: " + bom.CompArray.Length.ToString() + ", načteno: " + bomdata.Count.ToString()); 
+                //    MessageBox.Show("celkem: " + bom.CompArray.Length.ToString() + ", načteno: " + bomdata.Count.ToString()); 
 
                 PanelMaster panel = new PanelMaster();
                 panel.selectedFile = selectedFile;
-                panel.bomdata = bomdata;
+                panel.bomdata = bomdatagroup;
                 panel.connection = connection;
                 panel.ShowDialog();
+
 
             }
             catch (Exception ex)
@@ -410,6 +433,32 @@ namespace JCPBOMCheck
             {
                 // If something goes wrong, we don't want the exception to bubble up to Vault Explorer.
                 MessageBox.Show("Error: " + ex.Message);
+            }
+        }
+
+        private void RecursivelyFillBomQuantities(Dictionary<long, int> storage, Dictionary<long, BOMStructureOverrideEnum> bomstruct, Autodesk.Connectivity.WebServices.BOM bom, long parId, int parentCount)
+        {
+            if (bom?.InstArray == null)
+                return;
+            foreach (var inst in bom.InstArray.Where(b => b.ParId == parId))
+            {
+                var cldId = inst.CldId;
+                var quant = inst.Quant * parentCount;
+                var stru = inst.BOMStructOverde;
+                
+                var comp = bom.CompArray.Single(c => c.Id == inst.CldId);
+                var hasChildren = bom.InstArray.Where(i => i.ParId == inst.CldId);
+                var childFileId = comp.XRefId;
+
+                if (bomstruct.ContainsKey(childFileId)) bomstruct[childFileId] = stru;
+                else bomstruct.Add(childFileId, stru);
+
+                if (!hasChildren.Any())
+                {
+                    if (storage.ContainsKey(childFileId)) storage[childFileId] += quant;
+                    else storage.Add(childFileId, quant);
+                }
+                RecursivelyFillBomQuantities(storage, bomstruct, bom, cldId, quant);
             }
         }
     }

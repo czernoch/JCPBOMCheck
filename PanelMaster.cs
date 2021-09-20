@@ -19,7 +19,7 @@ namespace JCPBOMCheck
     public partial class PanelMaster : Form
     {
         public File selectedFile;
-        public Dictionary<int, Dictionary<string, string>> bomdata; // = new Dictionary<long, Dictionary<string, string>>();
+        public Dictionary<long, Dictionary<string, string>> bomdata = new Dictionary<long, Dictionary<string, string>>();
 
         ColumnHeader colList1atr = ((ColumnHeader)(new ColumnHeader()));
         ColumnHeader colList2atr = ((ColumnHeader)(new ColumnHeader()));
@@ -46,15 +46,24 @@ namespace JCPBOMCheck
         ColumnHeader colList6idw = ((ColumnHeader)(new ColumnHeader()));
         ColumnHeader colList7idw = ((ColumnHeader)(new ColumnHeader()));
 
+        ColumnHeader colList1pol = ((ColumnHeader)(new ColumnHeader()));
+        ColumnHeader colList2pol = ((ColumnHeader)(new ColumnHeader()));
+        ColumnHeader colList3pol = ((ColumnHeader)(new ColumnHeader()));
+        ColumnHeader colList4pol = ((ColumnHeader)(new ColumnHeader()));
+        ColumnHeader colList5pol = ((ColumnHeader)(new ColumnHeader()));
+        ColumnHeader colList6pol = ((ColumnHeader)(new ColumnHeader()));
+
         ListView listatr = new ListView();
         ListView listdxf = new ListView();
         ListView listidw = new ListView();
+        ListView listpol = new ListView();
 
         public VDF.Vault.Currency.Connections.Connection connection;
 
         TabPage myTabPageATR = new TabPage();
         TabPage myTabPageDXF = new TabPage();
         TabPage myTabPageIDW = new TabPage();
+        TabPage myTabPagePOL = new TabPage();
 
         public PanelMaster()
         {
@@ -109,6 +118,7 @@ namespace JCPBOMCheck
             listdxf.UseCompatibleStateImageBehavior = false;
             listdxf.Visible = true;
             listdxf.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listView_KeyDown);
+            listatr.Sorting = SortOrder.Ascending;
 
             myTabPageDXF.Name = listdxf.Name;
             myTabPageDXF.Text = listdxf.Name;
@@ -128,7 +138,6 @@ namespace JCPBOMCheck
             colList6idw.Text = "Charakter sestavy"; colList5idw.Width = 80;
             colList7idw.Text = "Chyba"; colList6idw.Width = 200;
 
-        //    listidw.Location = new System.Drawing.Point(30, 30);
             listidw.GridLines = true;
             listidw.HideSelection = false;
             listidw.FullRowSelect = true;
@@ -136,11 +145,39 @@ namespace JCPBOMCheck
             listidw.UseCompatibleStateImageBehavior = false;
             listidw.Visible = true;
             listidw.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listView_KeyDown);
+            listidw.Sorting = SortOrder.Ascending;
 
             myTabPageIDW.Name = listidw.Name;
             myTabPageIDW.Text = listidw.Name;
             myTabPageIDW.Controls.Add(listidw);
             tabControl.TabPages.Add(myTabPageIDW);
+
+
+            listpol.Name = "Položky";
+            listpol.Dock = DockStyle.Fill;
+
+            listpol.Columns.AddRange(new ColumnHeader[] { colList1pol, colList2pol, colList3pol, colList4pol, colList5pol, colList6pol });
+            colList1pol.Text = "Číslo položky"; colList1pol.Width = 110;
+            colList2pol.Text = "He_Kmen"; colList2pol.Width = 110;
+            colList3pol.Text = "SkupZbo"; colList3pol.Width = 60; colList3pol.TextAlign = HorizontalAlignment.Center;
+            colList4pol.Text = "Číslo součásti"; colList4pol.Width = 110;
+            colList5pol.Text = "Název souboru"; colList5pol.Width = 110; 
+            colList6pol.Text = "Chyba"; colList6pol.Width = 200;
+
+            listpol.GridLines = true;
+            listpol.HideSelection = false;
+            listpol.FullRowSelect = true;
+            listpol.View = View.Details;
+            listpol.UseCompatibleStateImageBehavior = false;
+            listpol.Visible = true;
+            listpol.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listView_KeyDown);
+            listpol.Sorting = SortOrder.Ascending;
+
+            myTabPagePOL.Name = listpol.Name;
+            myTabPagePOL.Text = listpol.Name;
+            myTabPagePOL.Controls.Add(listpol);
+            tabControl.TabPages.Add(myTabPagePOL);
+
         }
 
         private void buttonSpustit_Click(object sender, EventArgs e)
@@ -151,25 +188,33 @@ namespace JCPBOMCheck
             listatr.Items.Clear();
             listdxf.Items.Clear();
             listidw.Items.Clear();
+            listpol.Items.Clear();
 
-        //    listatr.BeginUpdate();
-        //    listdxf.BeginUpdate();
-        //    listidw.BeginUpdate();
+            //    listatr.BeginUpdate();
+            //    listdxf.BeginUpdate();
+            //    listidw.BeginUpdate();
 
-            myTabPageATR.Text = listatr.Name + " (není)";
-            myTabPageDXF.Text = listdxf.Name + " (není)";
-            myTabPageIDW.Text = listidw.Name + " (není)";
+            myTabPageATR.Text = listatr.Name + " (N/A)";
+            myTabPageDXF.Text = listdxf.Name + " (N/A)";
+            myTabPageIDW.Text = listidw.Name + " (N/A)";
+            myTabPagePOL.Text = listpol.Name + " (N/A)";
 
             #region Panel Kontrola kusovníku
 
             if (checkAtributy.Checked == true)
             {
-             //   listatr.Refresh();
-                
+                //   listatr.Refresh();
+
+                toolStripProgressBar1.Maximum = bomdata.Values.Count();
+                toolStripProgressBar1.Step = 1;
+                toolStripStatusLabel1.Text = "Vyhledávání atributů kusovníku.";
 
                 foreach (var bomitem in bomdata)
                 {
-          //          listatr.BeginUpdate();
+
+                    toolStripProgressBar1.PerformStep();
+
+                    //          listatr.BeginUpdate();
                     StringBuilder er = new StringBuilder();
 
                     try
@@ -255,9 +300,11 @@ namespace JCPBOMCheck
                 }
 
                 myTabPageATR.Text = listatr.Name + " (" + listatr.Items.Count + ")";
+                toolStripStatusLabel1.Text = "Hledání atributů kusovníku dokončeno.";
 
                 if (listatr.Items.Count > 0)
                 {
+                    
                     listatr.Sort();
            //         listatr.EndUpdate();
            //         listatr.Refresh();
@@ -272,9 +319,14 @@ namespace JCPBOMCheck
 
             if (checkDXF.Checked == true)
             {
+                toolStripProgressBar1.Maximum = bomdata.Values.Count();
+                toolStripProgressBar1.Step = 1;
+                toolStripStatusLabel1.Text = "Vyhledávání DXF.";
 
                 foreach (var bomitem in bomdata)
                 {
+                    toolStripProgressBar1.PerformStep();
+
                     try
                     {
                         if (bomitem.Value["IndexSoucasti"] == "V")
@@ -337,7 +389,8 @@ namespace JCPBOMCheck
 
                 if (listdxf.Items.Count > 0)
                 {
-                    //listdxf.Sort();
+                    //listdxf.Sorting = SortOrder.Ascending;
+                    listdxf.Sort();
                     //listdxf.Show();
                     AutoSizeColumnList(listdxf);
                 }
@@ -358,8 +411,6 @@ namespace JCPBOMCheck
 
                 //    listidw.Refresh();
 
-                MessageBox.Show(bomdata.Count.ToString());
-
                 foreach (var bomitem in bomdata)
                 {
                     //         listidw.BeginUpdate();
@@ -375,7 +426,7 @@ namespace JCPBOMCheck
 
                             // vyhledani IDW
                             File[] fileout = getVaultFile(bomitem.Value["CisloSoucasti"] + ".idw");
-                //            toolStripStatusLabel1.Text = "Hledám " + bomitem.Value["CisloSoucasti"] + ".idw";
+                            toolStripStatusLabel1.Text = "Hledám " + bomitem.Value["CisloSoucasti"] + ".idw";
 
                             foreach (File f in fileout)
                             {
@@ -420,7 +471,7 @@ namespace JCPBOMCheck
                     }
                     catch
                     {
-                        listidw.Items.Add(new ListViewItem(new[] { "xxx", "", "", "", "", "", "Neznámá chyba. Chybí data." }));
+                        listidw.Items.Add(new ListViewItem(new[] { bomitem.Value["NazevSouboru"], "", "", "", "", "", "Neznámá chyba. Chybí data." }));
                     }
                 }
 
@@ -440,6 +491,93 @@ namespace JCPBOMCheck
 
             #endregion
 
+            #region Panel Polozky
+
+            if (checkPolozky.Checked == true)
+            {
+
+                toolStripProgressBar1.Maximum = bomdata.Values.Count();
+                toolStripProgressBar1.Step = 1;
+                toolStripStatusLabel1.Text = "Vyhledávání položek.";
+
+                //    listidw.Refresh();
+
+                foreach (var bomitem in bomdata)
+                {
+                    //         listidw.BeginUpdate();
+
+                    toolStripProgressBar1.PerformStep();
+                    StringBuilder er = new StringBuilder();
+
+                    try
+                    {
+                        string number = "";
+
+                        // zjistim nazev polozky
+                        Item[] propdata;
+                        propdata = connection.WebServiceManager.ItemService.GetItemsByFileId(Convert.ToInt64(bomitem.Value["ID"]));
+                        if (propdata.Length > 0) number = propdata[0].ItemNum;
+                        else number = "";
+
+                        string hekmen = bomitem.Value["He_SkupZbo"] + "-" + bomitem.Value["CisloSoucasti"];
+
+                        // číslo součásti neodpovídá názvu souboru
+                        if (bomitem.Value["CisloSoucasti"] != bomitem.Value["NazevSouboru"].Substring(0, bomitem.Value["NazevSouboru"].Length - 4))
+                            er.Append("Název souboru se liší od čísla součásti. ");
+
+                        // he_kmen neodpovídá skupině zboží + číslu součásti
+                        if (bomitem.Value["He_Kmen"] != hekmen)
+                            er.Append("He_Kmen není složením ze skupiny zboží a čísla součásti. ");
+
+                        // he_kmen neodpovídá číslu položky (number)
+                        if (number.Length > 0 && bomitem.Value["He_Kmen"] != number)
+                            er.Append("Číslo položky (Number) se liší od He_Kmen. ");
+
+                        // skupina zboží + číslo součásti neodpovídá číslu položky (number)
+                        if (number.Length > 0 && number != hekmen)
+                            er.Append("Číslo položky (Number) se liší od 'Skupina zboží - Číslo součásti'. ");
+
+                        // součást nemá ještě vytvořenu položku
+                        if (number == "")
+                            er.Append("Položka ještě nebyla vytvořena. ");
+
+                        if (er.Length > 0)
+                        {
+                            listpol.Items.Add(new ListViewItem(new[] {
+                                number,
+                                bomitem.Value["He_Kmen"],
+                                bomitem.Value["He_SkupZbo"],
+                                bomitem.Value["CisloSoucasti"],
+                                bomitem.Value["NazevSouboru"],
+                                er.ToString() }));
+                        }
+
+                            //         listidw.EndUpdate();
+                            //         listidw.Refresh();
+
+                    }
+                    catch
+                    {
+                        listpol.Items.Add(new ListViewItem(new[] { "", "","", bomitem.Value["NazevSouboru"], "Neznámá chyba. Chybí data." }));
+                    }
+                }
+
+
+                myTabPagePOL.Text = listpol.Name + " (" + listpol.Items.Count + ")";
+
+                if (listpol.Items.Count > 0)
+                {
+                    AutoSizeColumnList(listpol);
+                    listpol.Sort();
+                    //listidw.EndUpdate();
+                }
+
+                toolStripStatusLabel1.Text = "Hledání položek dokončeno.";
+
+            }
+
+            #endregion
+            
             buttonSpustit.Enabled = true;
         }
 
@@ -500,7 +638,7 @@ namespace JCPBOMCheck
 
             listView.EndUpdate();
         }
-
+        
         private void listView_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Control && e.KeyCode == Keys.C)
@@ -511,16 +649,19 @@ namespace JCPBOMCheck
                     case "DXF":  CopyListBox(listdxf); break;
                     case "IDW": CopyListBox(listidw); break;
                     case "Atributy": CopyListBox(listatr); break;
+                    case "Položky": CopyListBox(listpol); break;
                 }
             }
             if (e.Control && e.KeyCode == Keys.A)
             {
+
                 // musim zjistit nad jakym listview jsem, jaky je aktivnni tabControl
                 switch (tabControl.SelectedTab.Name)
                 {
                     case "DXF": foreach (ListViewItem item in listdxf.Items) item.Selected = true; break;
                     case "IDW": foreach (ListViewItem item in listidw.Items) item.Selected = true; break;
                     case "Atributy": foreach (ListViewItem item in listatr.Items) item.Selected = true; break;
+                    case "Položky": foreach (ListViewItem item in listpol.Items) item.Selected = true; break;
                 }
             }
         }
@@ -568,6 +709,7 @@ namespace JCPBOMCheck
                 checkDatumy.Checked = true;
                 checkSestavy.Enabled = true;
                 checkDatumy.Enabled = true;
+                checkPolozky.Checked = true;
             }
             else
             {
@@ -578,12 +720,13 @@ namespace JCPBOMCheck
                 checkDatumy.Checked = false;
                 checkSestavy.Enabled = false;
                 checkDatumy.Enabled = false;
+                checkPolozky.Checked = false;
             }
         }
 
         private void check_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkDXF.Checked || checkIDW.Checked || checkAtributy.Checked)
+            if (checkDXF.Checked || checkIDW.Checked || checkAtributy.Checked || checkPolozky.Checked)
             {
                 buttonSpustit.Enabled = true;
             }
@@ -599,6 +742,15 @@ namespace JCPBOMCheck
                 checkSestavy.Enabled = false;
                 checkDatumy.Enabled = false;
             }
+            /*
+            if (checkDXF.Checked == false || !checkIDW.Checked ||
+                !checkAtributy.Checked ||
+                !checkSestavy.Checked ||
+                !checkDatumy.Checked ||
+                !checkPolozky.Checked)
+                    checkAll.Checked = false;
+            */
+
         }
 
         protected override bool ProcessDialogKey(Keys keyData)
@@ -611,5 +763,14 @@ namespace JCPBOMCheck
             return base.ProcessDialogKey(keyData);
         }
 
+        private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
+
+        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

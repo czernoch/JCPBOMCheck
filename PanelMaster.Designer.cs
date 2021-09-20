@@ -35,11 +35,15 @@ namespace JCPBOMCheck
             this.checkAll = new System.Windows.Forms.CheckBox();
             this.checkAtributy = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.checkDatumy = new System.Windows.Forms.CheckBox();
+            this.checkSestavy = new System.Windows.Forms.CheckBox();
             this.checkBox8 = new System.Windows.Forms.CheckBox();
             this.checkBox7 = new System.Windows.Forms.CheckBox();
-            this.checkBox6 = new System.Windows.Forms.CheckBox();
+            this.checkPolozky = new System.Windows.Forms.CheckBox();
             this.checkBox5 = new System.Windows.Forms.CheckBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.listView1 = new System.Windows.Forms.ListView();
@@ -48,16 +52,18 @@ namespace JCPBOMCheck
             this.buttonSpustit = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.checkSestavy = new System.Windows.Forms.CheckBox();
-            this.checkDatumy = new System.Windows.Forms.CheckBox();
-            this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
-            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
+            this.přejítDoSložkyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.přejítNaPoložkuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // checkDXF
@@ -111,7 +117,7 @@ namespace JCPBOMCheck
             this.groupBox1.Controls.Add(this.checkSestavy);
             this.groupBox1.Controls.Add(this.checkBox8);
             this.groupBox1.Controls.Add(this.checkBox7);
-            this.groupBox1.Controls.Add(this.checkBox6);
+            this.groupBox1.Controls.Add(this.checkPolozky);
             this.groupBox1.Controls.Add(this.checkBox5);
             this.groupBox1.Controls.Add(this.checkDXF);
             this.groupBox1.Controls.Add(this.checkAtributy);
@@ -123,49 +129,81 @@ namespace JCPBOMCheck
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             // 
+            // checkDatumy
+            // 
+            this.checkDatumy.AutoSize = true;
+            this.checkDatumy.Enabled = false;
+            this.checkDatumy.Location = new System.Drawing.Point(30, 104);
+            this.checkDatumy.Name = "checkDatumy";
+            this.checkDatumy.Size = new System.Drawing.Size(157, 17);
+            this.checkDatumy.TabIndex = 10;
+            this.checkDatumy.Text = "Kontrolovat datum zařazení";
+            this.checkDatumy.UseVisualStyleBackColor = true;
+            this.checkDatumy.CheckedChanged += new System.EventHandler(this.check_CheckedChanged);
+            // 
+            // checkSestavy
+            // 
+            this.checkSestavy.AutoSize = true;
+            this.checkSestavy.Enabled = false;
+            this.checkSestavy.Location = new System.Drawing.Point(30, 86);
+            this.checkSestavy.Name = "checkSestavy";
+            this.checkSestavy.Size = new System.Drawing.Size(119, 17);
+            this.checkSestavy.TabIndex = 9;
+            this.checkSestavy.Text = "Kontrolavat sestavy";
+            this.checkSestavy.UseVisualStyleBackColor = true;
+            this.checkSestavy.CheckedChanged += new System.EventHandler(this.check_CheckedChanged);
+            // 
             // checkBox8
             // 
             this.checkBox8.AutoSize = true;
             this.checkBox8.Enabled = false;
+            this.checkBox8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Strikeout, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.checkBox8.Location = new System.Drawing.Point(6, 196);
             this.checkBox8.Name = "checkBox8";
             this.checkBox8.Size = new System.Drawing.Size(231, 17);
             this.checkBox8.TabIndex = 8;
             this.checkBox8.Text = "Kontrola He_ID vs. registrační číslo heliosu";
             this.checkBox8.UseVisualStyleBackColor = true;
+            this.checkBox8.CheckedChanged += new System.EventHandler(this.check_CheckedChanged);
             // 
             // checkBox7
             // 
             this.checkBox7.AutoSize = true;
             this.checkBox7.Enabled = false;
+            this.checkBox7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Strikeout, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.checkBox7.Location = new System.Drawing.Point(6, 173);
             this.checkBox7.Name = "checkBox7";
             this.checkBox7.Size = new System.Drawing.Size(223, 17);
             this.checkBox7.TabIndex = 7;
             this.checkBox7.Text = "Kontrola název souboru vs. číslo součásti";
             this.checkBox7.UseVisualStyleBackColor = true;
+            this.checkBox7.CheckedChanged += new System.EventHandler(this.check_CheckedChanged);
             // 
-            // checkBox6
+            // checkPolozky
             // 
-            this.checkBox6.AutoSize = true;
-            this.checkBox6.Enabled = false;
-            this.checkBox6.Location = new System.Drawing.Point(6, 150);
-            this.checkBox6.Name = "checkBox6";
-            this.checkBox6.Size = new System.Drawing.Size(115, 17);
-            this.checkBox6.TabIndex = 5;
-            this.checkBox6.Text = "Kontrola He_Kmen";
-            this.checkBox6.UseVisualStyleBackColor = true;
+            this.checkPolozky.AutoSize = true;
+            this.checkPolozky.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.checkPolozky.Location = new System.Drawing.Point(6, 150);
+            this.checkPolozky.Name = "checkPolozky";
+            this.checkPolozky.Size = new System.Drawing.Size(197, 17);
+            this.checkPolozky.TabIndex = 5;
+            this.checkPolozky.Text = "Kontrola He_Kmen vs. číslo položky";
+            this.checkPolozky.UseVisualStyleBackColor = true;
+            this.checkPolozky.CheckedChanged += new System.EventHandler(this.check_CheckedChanged);
+            
             // 
             // checkBox5
             // 
             this.checkBox5.AutoSize = true;
             this.checkBox5.Enabled = false;
+            this.checkBox5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Strikeout, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.checkBox5.Location = new System.Drawing.Point(6, 127);
             this.checkBox5.Name = "checkBox5";
             this.checkBox5.Size = new System.Drawing.Size(124, 17);
             this.checkBox5.TabIndex = 4;
             this.checkBox5.Text = "Kontrola stylu plechu";
             this.checkBox5.UseVisualStyleBackColor = true;
+            this.checkBox5.CheckedChanged += new System.EventHandler(this.check_CheckedChanged);
             // 
             // statusStrip1
             // 
@@ -178,6 +216,22 @@ namespace JCPBOMCheck
             this.statusStrip1.Size = new System.Drawing.Size(984, 21);
             this.statusStrip1.TabIndex = 5;
             this.statusStrip1.Text = "statusStrip1";
+            // 
+            // toolStripProgressBar1
+            // 
+            this.toolStripProgressBar1.Name = "toolStripProgressBar1";
+            this.toolStripProgressBar1.Size = new System.Drawing.Size(100, 15);
+            this.toolStripProgressBar1.Step = 1;
+            this.toolStripProgressBar1.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(106, 15);
+            this.toolStripStatusLabel1.Spring = true;
+            this.toolStripStatusLabel1.Text = "Aplikace načtena...";
+            this.toolStripStatusLabel1.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             // 
             // tabControl
             // 
@@ -193,6 +247,7 @@ namespace JCPBOMCheck
             // tabPage1
             // 
             this.tabPage1.Controls.Add(this.listView1);
+            this.tabPage1.Controls.Add(this.menuStrip1);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
@@ -210,12 +265,13 @@ namespace JCPBOMCheck
             this.listView1.FullRowSelect = true;
             this.listView1.GridLines = true;
             this.listView1.HideSelection = false;
-            this.listView1.Location = new System.Drawing.Point(3, 3);
+            this.listView1.Location = new System.Drawing.Point(3, 27);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(712, 402);
+            this.listView1.Size = new System.Drawing.Size(712, 378);
             this.listView1.TabIndex = 9;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
+            this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
             // 
             // columnHeader1
             // 
@@ -268,43 +324,44 @@ namespace JCPBOMCheck
             this.tableLayoutPanel2.Size = new System.Drawing.Size(246, 434);
             this.tableLayoutPanel2.TabIndex = 0;
             // 
-            // checkSestavy
+            // menuStrip1
             // 
-            this.checkSestavy.AutoSize = true;
-            this.checkSestavy.Enabled = false;
-            this.checkSestavy.Location = new System.Drawing.Point(30, 86);
-            this.checkSestavy.Name = "checkSestavy";
-            this.checkSestavy.Size = new System.Drawing.Size(119, 17);
-            this.checkSestavy.TabIndex = 9;
-            this.checkSestavy.Text = "Kontrolavat sestavy";
-            this.checkSestavy.UseVisualStyleBackColor = true;
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem1});
+            this.menuStrip1.Location = new System.Drawing.Point(3, 3);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(712, 24);
+            this.menuStrip1.TabIndex = 10;
+            this.menuStrip1.Text = "menuStrip1";
+            this.menuStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip1_ItemClicked);
             // 
-            // checkDatumy
+            // toolStripMenuItem1
             // 
-            this.checkDatumy.AutoSize = true;
-            this.checkDatumy.Enabled = false;
-            this.checkDatumy.Location = new System.Drawing.Point(30, 104);
-            this.checkDatumy.Name = "checkDatumy";
-            this.checkDatumy.Size = new System.Drawing.Size(157, 17);
-            this.checkDatumy.TabIndex = 10;
-            this.checkDatumy.Text = "Kontrolovat datum zařazení";
-            this.checkDatumy.UseVisualStyleBackColor = true;
+            this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripTextBox1,
+            this.přejítDoSložkyToolStripMenuItem,
+            this.přejítNaPoložkuToolStripMenuItem});
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(50, 20);
+            this.toolStripMenuItem1.Text = "Menu";
             // 
-            // toolStripProgressBar1
+            // toolStripTextBox1
             // 
-            this.toolStripProgressBar1.Name = "toolStripProgressBar1";
-            this.toolStripProgressBar1.Size = new System.Drawing.Size(100, 15);
-            this.toolStripProgressBar1.Step = 1;
-            this.toolStripProgressBar1.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.toolStripTextBox1.Name = "toolStripTextBox1";
+            this.toolStripTextBox1.Size = new System.Drawing.Size(100, 23);
+            this.toolStripTextBox1.Text = "Otevřít";
             // 
-            // toolStripStatusLabel1
+            // přejítDoSložkyToolStripMenuItem
             // 
-            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(106, 16);
-            this.toolStripStatusLabel1.Spring = true;
-            this.toolStripStatusLabel1.Text = "Aplikace načtena...";
-            this.toolStripStatusLabel1.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.přejítDoSložkyToolStripMenuItem.Name = "přejítDoSložkyToolStripMenuItem";
+            this.přejítDoSložkyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.přejítDoSložkyToolStripMenuItem.Text = "Přejít do složky";
+            // 
+            // přejítNaPoložkuToolStripMenuItem
+            // 
+            this.přejítNaPoložkuToolStripMenuItem.Name = "přejítNaPoložkuToolStripMenuItem";
+            this.přejítNaPoložkuToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.přejítNaPoložkuToolStripMenuItem.Text = "Přejít na položku";
             // 
             // PanelMaster
             // 
@@ -314,6 +371,7 @@ namespace JCPBOMCheck
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.statusStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MainMenuStrip = this.menuStrip1;
             this.Name = "PanelMaster";
             this.Text = "Kontrola kusovníku";
             this.groupBox1.ResumeLayout(false);
@@ -322,9 +380,12 @@ namespace JCPBOMCheck
             this.statusStrip1.PerformLayout();
             this.tabControl.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -337,7 +398,7 @@ namespace JCPBOMCheck
         private System.Windows.Forms.CheckBox checkAll;
         private System.Windows.Forms.CheckBox checkAtributy;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.CheckBox checkBox6;
+        private System.Windows.Forms.CheckBox checkPolozky;
         private System.Windows.Forms.CheckBox checkBox5;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.CheckBox checkBox7;
@@ -354,5 +415,10 @@ namespace JCPBOMCheck
         private System.Windows.Forms.CheckBox checkSestavy;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripTextBox toolStripTextBox1;
+        private System.Windows.Forms.ToolStripMenuItem přejítDoSložkyToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem přejítNaPoložkuToolStripMenuItem;
     }
 }
