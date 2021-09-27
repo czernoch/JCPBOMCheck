@@ -49,21 +49,21 @@ namespace JCPBOMCheck
             this.listView1 = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.buttonSpustit = new System.Windows.Forms.Button();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
             this.přejítDoSložkyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.přejítNaPoložkuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.buttonSpustit = new System.Windows.Forms.Button();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
-            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // checkDXF
@@ -94,9 +94,9 @@ namespace JCPBOMCheck
             this.checkAll.Location = new System.Drawing.Point(3, 3);
             this.checkAll.Name = "checkAll";
             this.checkAll.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
-            this.checkAll.Size = new System.Drawing.Size(152, 16);
+            this.checkAll.Size = new System.Drawing.Size(155, 16);
             this.checkAll.TabIndex = 2;
-            this.checkAll.Text = "Zaškrtnout/odškrnout vše";
+            this.checkAll.Text = "Zaškrtnout/odškrtnout vše";
             this.checkAll.UseVisualStyleBackColor = true;
             this.checkAll.CheckedChanged += new System.EventHandler(this.checkAll_CheckedChanged);
             // 
@@ -149,7 +149,7 @@ namespace JCPBOMCheck
             this.checkSestavy.Name = "checkSestavy";
             this.checkSestavy.Size = new System.Drawing.Size(119, 17);
             this.checkSestavy.TabIndex = 9;
-            this.checkSestavy.Text = "Kontrolavat sestavy";
+            this.checkSestavy.Text = "Kontrolovat sestavy";
             this.checkSestavy.UseVisualStyleBackColor = true;
             this.checkSestavy.CheckedChanged += new System.EventHandler(this.check_CheckedChanged);
             // 
@@ -190,7 +190,6 @@ namespace JCPBOMCheck
             this.checkPolozky.Text = "Kontrola He_Kmen vs. číslo položky";
             this.checkPolozky.UseVisualStyleBackColor = true;
             this.checkPolozky.CheckedChanged += new System.EventHandler(this.check_CheckedChanged);
-            
             // 
             // checkBox5
             // 
@@ -281,6 +280,45 @@ namespace JCPBOMCheck
             // 
             this.columnHeader2.Width = 80;
             // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem1});
+            this.menuStrip1.Location = new System.Drawing.Point(3, 3);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(712, 24);
+            this.menuStrip1.TabIndex = 10;
+            this.menuStrip1.Text = "menuStrip1";
+            this.menuStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip1_ItemClicked);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripTextBox1,
+            this.přejítDoSložkyToolStripMenuItem,
+            this.přejítNaPoložkuToolStripMenuItem});
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(50, 20);
+            this.toolStripMenuItem1.Text = "Menu";
+            // 
+            // toolStripTextBox1
+            // 
+            this.toolStripTextBox1.Name = "toolStripTextBox1";
+            this.toolStripTextBox1.Size = new System.Drawing.Size(100, 23);
+            this.toolStripTextBox1.Text = "Otevřít";
+            // 
+            // přejítDoSložkyToolStripMenuItem
+            // 
+            this.přejítDoSložkyToolStripMenuItem.Name = "přejítDoSložkyToolStripMenuItem";
+            this.přejítDoSložkyToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.přejítDoSložkyToolStripMenuItem.Text = "Přejít do složky";
+            // 
+            // přejítNaPoložkuToolStripMenuItem
+            // 
+            this.přejítNaPoložkuToolStripMenuItem.Name = "přejítNaPoložkuToolStripMenuItem";
+            this.přejítNaPoložkuToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.přejítNaPoložkuToolStripMenuItem.Text = "Přejít na položku";
+            // 
             // buttonSpustit
             // 
             this.buttonSpustit.Enabled = false;
@@ -324,45 +362,6 @@ namespace JCPBOMCheck
             this.tableLayoutPanel2.Size = new System.Drawing.Size(246, 434);
             this.tableLayoutPanel2.TabIndex = 0;
             // 
-            // menuStrip1
-            // 
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItem1});
-            this.menuStrip1.Location = new System.Drawing.Point(3, 3);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(712, 24);
-            this.menuStrip1.TabIndex = 10;
-            this.menuStrip1.Text = "menuStrip1";
-            this.menuStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip1_ItemClicked);
-            // 
-            // toolStripMenuItem1
-            // 
-            this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripTextBox1,
-            this.přejítDoSložkyToolStripMenuItem,
-            this.přejítNaPoložkuToolStripMenuItem});
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(50, 20);
-            this.toolStripMenuItem1.Text = "Menu";
-            // 
-            // toolStripTextBox1
-            // 
-            this.toolStripTextBox1.Name = "toolStripTextBox1";
-            this.toolStripTextBox1.Size = new System.Drawing.Size(100, 23);
-            this.toolStripTextBox1.Text = "Otevřít";
-            // 
-            // přejítDoSložkyToolStripMenuItem
-            // 
-            this.přejítDoSložkyToolStripMenuItem.Name = "přejítDoSložkyToolStripMenuItem";
-            this.přejítDoSložkyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.přejítDoSložkyToolStripMenuItem.Text = "Přejít do složky";
-            // 
-            // přejítNaPoložkuToolStripMenuItem
-            // 
-            this.přejítNaPoložkuToolStripMenuItem.Name = "přejítNaPoložkuToolStripMenuItem";
-            this.přejítNaPoložkuToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.přejítNaPoložkuToolStripMenuItem.Text = "Přejít na položku";
-            // 
             // PanelMaster
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -381,11 +380,11 @@ namespace JCPBOMCheck
             this.tabControl.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 

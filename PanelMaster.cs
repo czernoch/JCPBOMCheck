@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 using Autodesk.Connectivity.Explorer.Extensibility;
 using Autodesk.Connectivity.WebServices;
@@ -533,12 +534,18 @@ namespace JCPBOMCheck
                         if (number.Length > 0 && bomitem.Value["He_Kmen"] != number)
                             er.Append("Číslo položky (Number) se liší od He_Kmen. ");
 
-                        // skupina zboží + číslo součásti neodpovídá číslu položky (number)
-                        if (number.Length > 0 && number != hekmen)
-                            er.Append("Číslo položky (Number) se liší od 'Skupina zboží - Číslo součásti'. ");
+                        // kontrola number jestli je 3 znaky na prvním místě, pak pomlčka a zbytek
+                        Regex regex = new Regex("^([0-9][0-9][0-9])([-])(.*)$");
+                        Match match = regex.Match(number);
+                        if (number.Length > 0 && (match.Groups[1].Value.Length != 3 || match.Groups[2].Value != "-"))
+                            er.Append("Číslo položky (number) neodpovídá správnému zápisu. ");
 
-                        // součást nemá ještě vytvořenu položku
-                        if (number == "")
+                        // skupina zboží + číslo součásti neodpovídá číslu položky (number)
+                        //if (number.Length > 0 && number != hekmen && bomitem.Value["He_Kmen"] == number)
+                        //    er.Append("Číslo položky (Number) se liší od 'Skupina zboží - Číslo součásti'. ");
+
+                            // součást nemá ještě vytvořenu položku
+                            if (number == "")
                             er.Append("Položka ještě nebyla vytvořena. ");
 
                         if (er.Length > 0)
